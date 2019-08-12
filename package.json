@@ -1,0 +1,30 @@
+{
+  "name": "lambda-serverless-cyates",
+  "version": "1.0.0",
+  "description": "Giving AWS Lamba serverless a try.",
+  "main": "handler.js",
+  "dependencies": {
+    "serverless": "^1.49.0"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.508.0",
+    "ts-node": "^8.3.0",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.3"
+  },
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/charles-yates/lambda-serverless-cyates.git"
+  },
+  "keywords": [
+    "aws",
+    "aws lambda",
+    "typescript",
+    "serverless"
+  ],
+  "author": "charles-yates",
+  "license": "ISC"
+}

@@ -5,6 +5,7 @@ provider:
   runtime: nodejs6.10
   stage: demo
   region: us-east-1
+  profile: serverless-admin
   iamRoleStatements:
     - Effect: "Allow"
       Action:
@@ -21,13 +22,21 @@ package:
   exclude:
     - node_modules/**/*
 
+functions:
+  getMovie:
+    handler: src/api/movies/movies.getMovie
+    description: Returns a single movie.
+
+    events:
+      - http:
+          path: movies/{id}
+          method: get
+          cors: true
+          request:
+            parameters:
+              paths:
+                id: true
+
 custom:
-  documentation: ${file(./swagger/documentation.yml)}
-  customDomain:
-    basePath: "api"
-    domainName: serverless-sample.balassy.me
-    certificateName: serverless-sample.balassy.me
-    stage: ${self:provider.stage}
-    createRoute53Record: true
   output:
     file: .serverless/output.json

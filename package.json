@@ -12,12 +12,27 @@
     "aws-sdk-mock": "^4.5.0",
     "aws-serverless-express": "^3.3.6",
     "serverless": "^1.49.0",
+    "serverless-aws-documentation": "^1.1.0",
+    "serverless-domain-manager": "^3.2.2",
+    "serverless-dynamodb-local": "^0.2.38",
+    "serverless-offline": "^5.0.0",
+    "serverless-plugin-typescript": "^1.1.9",
+    "serverless-stack-output": "^0.2.3",
     "ts-mockito": "^2.4.2",
     "ts-node": "^8.3.0",
     "tslint": "^5.18.0",
     "typescript": "^3.5.3"
   },
   "scripts": {
+    "analyse": "npm run lint && npm run test",
+    "clean": "rimraf .build .serverless .nyc_output coverage",
+    "prebuild": "npm run clean && npm run analyse",
+    "build": "serverless package",
+    "predeploy": "npm run clean && npm run analyse",
+    "deploy": "serverless deploy",
+    "deploy:init": "serverless create_domain",
+    "lint": "tslint --project . --format verbose",
+    "start": "serverless offline start",
     "test": ""
   },
   "repository": {

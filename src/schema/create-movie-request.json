@@ -1,0 +1,39 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Movie Schema",
+  "required": ["format", "length", "rating", "title", "year"],
+  "properties": {
+    "format": {
+      "type": "string",
+      "title": "Movie format",
+      "default": "",
+      "pattern": "^VHS$|^DVD$|^Streaming$"
+    },
+    "length": {
+      "type": "integer",
+      "title": "Length of the movie in minutes",
+      "default": "",
+      "pattern": "^[0-9]+$"
+    },
+    "rating": {
+      "type": "integer",
+      "title": "Rating of the movie",
+      "default": "",
+      "patter": "[1-5]"
+    },
+    "title": {
+      "type": "string",
+      "title": "The title of the movie",
+      "default": "",
+      "pattern": "^[a-zA-Z0-9]+$"
+    },
+    "year": {
+      "type": "integer",
+      "title": "The year the movie was released",
+      "default": "",
+      "pattern": "^[0-9]+$"
+    }
+  }
+}

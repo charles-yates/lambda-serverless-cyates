@@ -11,3 +11,7 @@ export interface Movie {
 export interface GetMovieResult {
     movie: Movie;
 }
+
+export interface GetMoviesResult {
+    movies: Movie[];
+}

@@ -12,6 +12,11 @@ provider:
         - "apigateway:GET"
       Resource:
         - "arn:aws:apigateway:${self:provider.region}::/restapis*"
+    - Effect: "Allow"
+      Action:
+        - "dynamodb:*"
+      Resource:
+        - "*"
 
 plugins:
   - serverless-plugin-typescript
@@ -84,7 +89,8 @@ functions:
             parameters:
               paths:
                 id: true
-            schema: application/json: ${file(src/schema/create-movie-request.json)}
+            schema:
+              application/json: ${file(src/schema/create-movie-request.json)}
           documentation:
             summary: Update a movie.
             tags:
@@ -107,7 +113,8 @@ functions:
           method: post
           cors: true
           request:
-            schema: application/json: ${file(src/schema/create-movie-request.json)}
+            schema:
+              application/json: ${file(src/schema/create-movie-request.json)}
           documentation:
             summary: Create a new movie.
             tags:

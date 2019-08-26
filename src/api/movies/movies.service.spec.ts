@@ -1,6 +1,7 @@
+// tslint:disable
 import { instance, mock, reset, when } from 'ts-mockito';
 
-import { ErrorResult, ForbiddenResult, NotFoundResult } from '../../shared/errors';
+import { ErrorResult, NotFoundResult } from '../../shared/errors';
 import { GetMovieResult, Movie } from './movies.interfaces';
 import { MoviesRepository } from './movies.repository';
 import { MoviesService } from './movies.service';

@@ -1,3 +1,4 @@
+// tslint:disable
 export const HttpStatusCode = {
   BadRequest: 400,
   ConfigurationError: 500.19,

@@ -21,7 +21,7 @@
       "type": "integer",
       "title": "Rating of the movie",
       "default": "",
-      "patter": "[1-5]"
+      "pattern": "[1-5]"
     },
     "title": {
       "type": "string",

@@ -21,7 +21,7 @@ export class MoviesController {
         const id: number = +event.pathParameters.id;
         this._service.getMovie(id)
             .then((result: GetMovieResult) => {
-                return ResponseBuilder.ok<GetMovieResult>(result, callback);
+                ResponseBuilder.ok<GetMovieResult>(result, callback);
             })
             .catch((error: ErrorResult) => {
                 if (error instanceof NotFoundResult) {
@@ -39,7 +39,7 @@ export class MoviesController {
     public getMovies: ApiHandler = (event: ApiEvent, context: ApiContext, callback: ApiCallback): void => {
         this._service.getMovies()
             .then((result: GetMoviesResult) => {
-                return ResponseBuilder.ok<GetMoviesResult>(result, callback);
+                ResponseBuilder.ok<GetMoviesResult>(result, callback);
             })
             .catch((error: ErrorResult) => {
                 if (error instanceof NotFoundResult) {
@@ -80,7 +80,7 @@ export class MoviesController {
         };
         this._service.patchMovie(id, movie)
             .then((result: GetMovieResult) => {
-                return ResponseBuilder.ok<GetMovieResult>(result, callback);
+                ResponseBuilder.ok<GetMovieResult>(result, callback);
             })
             .catch((error: ErrorResult) => {
                 if (error instanceof NotFoundResult) {
@@ -121,7 +121,7 @@ export class MoviesController {
         };
         this._service.putMovie(movie)
             .then((result: GetMovieResult) => {
-                return ResponseBuilder.ok<GetMovieResult>(result, callback);
+                ResponseBuilder.ok<GetMovieResult>(result, callback);
             })
             .catch((error: ErrorResult) => {
                 if (error instanceof NotFoundResult) {

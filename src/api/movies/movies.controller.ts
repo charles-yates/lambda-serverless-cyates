@@ -18,11 +18,9 @@ export class MoviesController {
         const id: string = event.pathParameters.id;
         this._service.deleteMovie(id)
             .then((result: string) => {
-                console.log('result', result);
-                ResponseBuilder.noContent();
+                ResponseBuilder.noContent({}, callback);
             })
             .catch((error: ErrorResult) => {
-                console.error(error);
                 if (error instanceof NotFoundResult) {
                     return ResponseBuilder.notFound(error.code, error.description, callback);
                 }

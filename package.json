@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "description": "Giving AWS Lamba serverless a try.",
   "main": "handler.js",
-  "dependencies": {},
+  "dependencies": {
+    "uuid": "^3.3.3"
+  },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.31",
     "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.1",
+    "@types/uuid": "^3.4.5",
     "aws-lambda": "^0.1.2",
     "aws-sdk": "^2.508.0",
     "aws-sdk-mock": "^4.5.0",

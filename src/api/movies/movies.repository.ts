@@ -1,5 +1,6 @@
 // tslint:disable
 import { AWSError, DynamoDB } from 'aws-sdk';
+import { v1 as uuidv1 } from 'uuid';
 import { Movie } from './movies.interfaces';
 import { DynamodbResponse } from '../../shared/dynamodb-response';
 
@@ -9,10 +10,32 @@ export class MoviesRepository {
         region: 'us-east-1'
     });
 
-    public async exists(id: number): Promise<boolean> {
+    public deleteMovie(id: string): Promise<string> {
+        const params: DynamoDB.Types.DeleteItemInput = {
+            Key: {
+                'movieId': {S: id}
+            },
+            TableName: 'movies'
+        };
+
+        let message = '';
+
+        return new Promise<string>(resolve => {
+            this.ddb.deleteItem(params, function (err: AWSError, data: DynamoDB.Types.DeleteItemOutput) {
+                if (err) {
+                    message = 'error';
+                } else {
+                    message = 'success';
+                }
+                resolve(message);
+            });
+        });
+    }
+
+    public async exists(id: string): Promise<boolean> {
         const params: DynamoDB.Types.GetItemInput = {
             Key: {
-                'movieId': {N: id.toString()}
+                'movieId': {S: id}
             },
             TableName: 'movies'
         };
@@ -24,10 +47,10 @@ export class MoviesRepository {
         });
     }
 
-    public async getMovie(id: number): Promise<Movie> {
+    public async getMovie(id: string): Promise<Movie> {
         const params: DynamoDB.Types.GetItemInput = {
             Key: {
-                'movieId': {N: id.toString()}
+                'movieId': {S: id}
             },
             TableName: 'movies'
         };
@@ -75,40 +98,10 @@ export class MoviesRepository {
         });
     }
 
-    public putMovie(movie: Movie): Movie {
-        const params: DynamoDB.Types.PutItemInput = {
-            TableName: 'movies',
-            Item: {
-                'format': {S: movie.format},
-                'length': {N: movie.length.toString()},
-                'rating': {N: movie.rating.toString()},
-                'title': {S: movie.title},
-                'year': {N: movie.year.toString()}
-            }
-        };
-
-        let newMovie = movie;
-
-        this.ddb.putItem(params, function(err: AWSError, data: DynamoDB.Types.PutItemOutput) {
-            if (err) {
-                newMovie = {
-                    format: '',
-                    id: 0,
-                    length: 0,
-                    rating: 0,
-                    title: '',
-                    year: 0
-                };
-            }
-        });
-
-        return newMovie;
-    }
-
-    public patchMovie(id: number, movie: Movie): Movie {
+    public patchMovie(id: string, movie: Movie): Promise<Movie> {
         const params: DynamoDB.Types.UpdateItemInput = {
             Key: {
-                'movieId': {N: id.toString()}
+                'movieId': {S: id}
             },
             TableName: 'movies',
             UpdateExpression: 'set format = :f, length = :l, rating = :r, title = :t, year = :y',
@@ -118,46 +111,38 @@ export class MoviesRepository {
                 ':r': {N: movie.rating.toString()},
                 ':t': {S: movie.title},
                 ':y': {N: movie.year.toString()}
-            },
-            ReturnValues: 'UPDATED_NEW'
+            }
         };
 
-        let patchedMovie = movie;
-
-        this.ddb.updateItem(params, function(err: AWSError, data: DynamoDB.Types.UpdateItemOutput) {
-            if(err) {
-                patchedMovie = {
-                    format: '',
-                    id: 0,
-                    length: 0,
-                    rating: 0,
-                    title: '',
-                    year: 0
-                };
-            }
+        return new Promise<Movie>(resolve => {
+            this.ddb.updateItem(params, function(err: AWSError, data: DynamoDB.Types.UpdateItemOutput) {
+                if(!err) {
+                    resolve(movie);
+                }
+            });
         });
-
-        return patchedMovie;
     }
 
-    public deleteMovie(id: number): string {
-        const params: DynamoDB.Types.DeleteItemInput = {
-            Key: {
-                'movieId': {N: id.toString()}
-            },
-            TableName: 'movies'
+    public putMovie(movie: Movie): Promise<Movie> {
+        const movieId: string = uuidv1();
+        const params: DynamoDB.Types.PutItemInput = {
+            TableName: 'movies',
+            Item: {
+                'format': {S: movie.format},
+                'length': {N: movie.length.toString()},
+                'movieId': {S: movieId},
+                'rating': {N: movie.rating.toString()},
+                'title': {S: movie.title},
+                'year': {N: movie.year.toString()}
+            }
         };
 
-        let message = '';
-
-        this.ddb.deleteItem(params, function(err: AWSError, data: DynamoDB.Types.DeleteItemOutput) {
-            if (err) {
-                message = 'error';
-            } else {
-                message = 'success';
-            }
+        return new Promise<Movie>(resolve => {
+            this.ddb.putItem(params, function(err: AWSError, data: DynamoDB.Types.PutItemOutput) {
+                if (!err) {
+                    resolve(movie);
+                }
+            });
         });
-
-        return message;
     }
 }

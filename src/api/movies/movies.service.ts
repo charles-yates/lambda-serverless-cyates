@@ -6,10 +6,21 @@ import { MoviesRepository } from './movies.repository';
 export class MoviesService {
     public constructor(private readonly _repo: MoviesRepository) {}
 
-    public getMovie(id: number): Promise<GetMovieResult> {
+    public deleteMovie(id: string): Promise<string> {
+        return new Promise(async (resolve: (result: string) => void, reject: (reason: NotFoundResult) => void): void => {
+            if (!this._repo.exists(id)) {
+                reject(new NotFoundResult('UNKNOWN_MOVIE', 'There is no movie with the specified ID.'));
+                return;
+            }
+
+            const response: string = await this._repo.deleteMovie(id);
+            resolve(response);
+        });
+    }
+
+    public getMovie(id: string): Promise<GetMovieResult> {
         return new Promise(async (resolve: (result: GetMovieResult) => void, reject: (reason: NotFoundResult) => void): void => {
             const exists: boolean = await this._repo.exists(id);
-            console.log('exists-service', exists);
             if (!exists) {
                 reject(new NotFoundResult('UNKNOWN_MOVIE', 'There is no movie with the specified ID.'));
                 return;
@@ -38,14 +49,14 @@ export class MoviesService {
         });
     }
 
-    public patchMovie(id: number, movie: Movie): Promise<GetMovieResult> {
-        return new Promise((resolve: (result: GetMovieResult) => void, reject: (reason: NotFoundResult) => void): void => {
+    public patchMovie(id: string, movie: Movie): Promise<GetMovieResult> {
+        return new Promise(async (resolve: (result: GetMovieResult) => void, reject: (reason: NotFoundResult) => void): void => {
             if (!this._repo.exists(id)) {
                 reject(new NotFoundResult('UNKNOWN_MOVIE', 'There is no movie with the specified ID.'));
                 return;
             }
 
-            const patchedMovie: Movie = this._repo.patchMovie(id, movie);
+            const patchedMovie: Movie = await this._repo.patchMovie(id, movie);
             const result: GetMovieResult = {
                 movie: patchedMovie
             };
@@ -55,8 +66,8 @@ export class MoviesService {
     }
 
     public putMovie(movie: Movie): Promise<GetMovieResult> {
-        return new Promise((resolve: (result: GetMovieResult) => void): void => {
-            const newMovie: Movie = this._repo.putMovie(movie);
+        return new Promise(async (resolve: (result: GetMovieResult) => void): void => {
+            const newMovie: Movie = await this._repo.putMovie(movie);
             const result: GetMovieResult = {
                 movie: newMovie
             };

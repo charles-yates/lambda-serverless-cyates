@@ -7,6 +7,7 @@ const repo: MoviesRepository = new MoviesRepository();
 const service: MoviesService = new MoviesService(repo);
 const controller: MoviesController = new MoviesController(service);
 
+export const deleteMovie: ApiHandler = controller.deleteMovie;
 export const getMovie: ApiHandler = controller.getMovie;
 export const getMovies: ApiHandler = controller.getMovies;
 export const patchMovie: ApiHandler = controller.patchMovie;

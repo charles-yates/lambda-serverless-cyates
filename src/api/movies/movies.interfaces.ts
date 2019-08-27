@@ -1,7 +1,7 @@
 
 export interface Movie {
     format: string;
-    id: number;
+    id: string;
     length: number;
     rating: number;
     title: string;

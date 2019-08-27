@@ -1,3 +1,4 @@
+// tslint:disable
 import { ApiCallback, ApiContext, ApiEvent, ApiHandler } from '../../shared/api.interfaces';
 import { ErrorCode } from '../../shared/error-codes';
 import { ErrorResult, ForbiddenResult, NotFoundResult } from '../../shared/errors';
@@ -8,17 +9,39 @@ import { MoviesService } from './movies.service';
 export class MoviesController {
     public constructor(private readonly _service: MoviesService) {}
 
+    public deleteMovie: ApiHandler = (event: ApiEvent, context: ApiContext, callback: ApiCallback): void => {
+        // Input validation.
+        if (!event.pathParameters || !event.pathParameters.id) {
+            return ResponseBuilder.badRequest(ErrorCode.MissingId, 'Please specify the movie ID.', callback);
+        }
+
+        const id: string = event.pathParameters.id;
+        this._service.deleteMovie(id)
+            .then((result: string) => {
+                console.log('result', result);
+                ResponseBuilder.noContent();
+            })
+            .catch((error: ErrorResult) => {
+                console.error(error);
+                if (error instanceof NotFoundResult) {
+                    return ResponseBuilder.notFound(error.code, error.description, callback);
+                }
+
+                if (error instanceof ForbiddenResult) {
+                    return ResponseBuilder.forbidden(error.code, error.description, callback);
+                }
+
+                return ResponseBuilder.internalServerError(error, callback);
+            });
+    }
+
     public getMovie: ApiHandler = (event: ApiEvent, context: ApiContext, callback: ApiCallback): void => {
         // Input validation.
         if (!event.pathParameters || !event.pathParameters.id) {
             return ResponseBuilder.badRequest(ErrorCode.MissingId, 'Please specify the movie ID.', callback);
         }
 
-        if (isNaN(+event.pathParameters.id)) {
-            return ResponseBuilder.badRequest(ErrorCode.InvalidId, 'The movie ID must be a number.', callback);
-        }
-
-        const id: number = +event.pathParameters.id;
+        const id: string = event.pathParameters.id;
         this._service.getMovie(id)
             .then((result: GetMovieResult) => {
                 ResponseBuilder.ok<GetMovieResult>(result, callback);
@@ -60,13 +83,13 @@ export class MoviesController {
             return ResponseBuilder.badRequest(ErrorCode.MissingId, 'Please specify the movie ID.', callback);
         }
 
-        if (isNaN(+event.pathParameters.id)) {
-            return ResponseBuilder.badRequest(ErrorCode.InvalidId, 'The movie ID must be a number.', callback);
+        if (!event.body) {
+            return ResponseBuilder.badRequest(ErrorCode.GeneralError, 'No request body received.', callback);
         }
 
         const format: string = event.pathParameters.format;
         const length: number = +event.pathParameters.length;
-        const id: number = +event.pathParameters.id;
+        const id: string = event.pathParameters.id;
         const rating: number = +event.pathParameters.rating;
         const title: string = event.pathParameters.title;
         const year: number = +event.pathParameters.year;
@@ -97,23 +120,19 @@ export class MoviesController {
 
     public putMovie: ApiHandler = (event: ApiEvent, context: ApiContext, callback: ApiCallback): void => {
         // Input validation.
-        if (!event.pathParameters || !event.pathParameters.id) {
-            return ResponseBuilder.badRequest(ErrorCode.MissingId, 'Please specify the movie ID.', callback);
+        if (!event.body) {
+            return ResponseBuilder.badRequest(ErrorCode.GeneralError, 'No request body received.', callback);
         }
 
-        if (isNaN(+event.pathParameters.id)) {
-            return ResponseBuilder.badRequest(ErrorCode.InvalidId, 'The movie ID must be a number.', callback);
-        }
-
-        const format: string = event.pathParameters.format;
-        const length: number = +event.pathParameters.length;
-        const id: number = +event.pathParameters.id;
-        const rating: number = +event.pathParameters.rating;
-        const title: string = event.pathParameters.title;
-        const year: number = +event.pathParameters.year;
+        const body: object = JSON.parse(event.body);
+        const format: string = body.format;
+        const length: number = +body.length;
+        const rating: number = +body.rating;
+        const title: string = body.title;
+        const year: number = +body.year;
         const movie: Movie = {
             format,
-            id,
+            id: '',
             length,
             rating,
             title,

@@ -27,7 +27,7 @@
       "type": "string",
       "title": "The title of the movie",
       "default": "",
-      "pattern": "^[a-zA-Z0-9]+$"
+      "pattern": "^[a-zA-Z0-9\\s]+$"
     },
     "year": {
       "type": "integer",

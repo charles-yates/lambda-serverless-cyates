@@ -27,6 +27,11 @@ export class ResponseBuilder {
         ResponseBuilder._returnAs<InternalServerErrorResult>(errorResult, HttpStatusCode.InternalServerError, callback);
     }
 
+    public static noContent(): void {
+        // tslint:disable no-empty
+        ResponseBuilder._returnAs('', HttpStatusCode.NoContent, function(): void {});
+    }
+
     public static notFound(code: string, description: string, callback: ApiCallback): void {
         const errorResult: NotFoundResult = new NotFoundResult(code, description);
         ResponseBuilder._returnAs<NotFoundResult>(errorResult, HttpStatusCode.NotFound, callback);

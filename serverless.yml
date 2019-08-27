@@ -31,8 +31,34 @@ package:
     src/**/!(*.spec).js
   exclude:
     - node_modules/**/*
+    - '!node_modules/uuid/**'
 
 functions:
+  deleteMovie:
+    handler: src/api/movies/movies.deleteMovie
+    description: Deletes a movie.
+
+    events:
+      - http:
+          path: movies/{id}
+          method: delete
+          cors: true
+          request:
+            parameters:
+              paths:
+                id: true
+          documentation:
+            summary: Delete a movie.
+            tags:
+              - Movie
+            description: Deletes the specified movie.
+            pathParams:
+              - name: id
+                description: The unique identifier of the movie to delete.
+            methodResponses:
+              - statusCode: '204'
+                description: Returned when the operation is completed successfully.
+
   getMovie:
     handler: src/api/movies/movies.getMovie
     description: Returns a single movie.
@@ -98,7 +124,7 @@ functions:
             description: Updates a movie.
             pathParams:
               - name: id
-                description: The unique identifier of the movie to retrieve.
+                description: The unique identifier of the movie to update.
             methodResponses:
               - statusCode: '200'
                 description: Returned when the operation is completed successfully.

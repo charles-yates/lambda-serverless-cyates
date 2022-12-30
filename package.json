@@ -15,7 +15,7 @@
     "aws-sdk": "^2.508.0",
     "aws-sdk-mock": "^4.5.0",
     "aws-serverless-express": "^3.3.6",
-    "serverless": "^1.49.0",
+    "serverless": "^1.83.3",
     "serverless-aws-documentation": "^1.1.0",
     "serverless-domain-manager": "^3.2.2",
     "serverless-dynamodb-local": "^0.2.38",
